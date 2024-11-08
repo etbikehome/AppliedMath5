@@ -26,7 +26,7 @@ vy0 = 0;
 omega0 = 0;
 
 V0 = [x0;y0;theta0;vx0;vy0;omega0];
-tspan = [0 50];
+tspan = [0 60];
 
 %run the integration
 [tlist,Vlist] = ode45(my_rate_func,tspan,V0);
@@ -45,21 +45,34 @@ end
 
 axis equal; axis square;
 axis([-5,5,-5,5]);
+timestamp = text(-4, 4, '');
+frametimes = zeros(length(tlist),1);
+
+pause(2)
+tic
 
 for i = 1:length(tlist)
-    tic
     t = tlist(i);
     V = Vlist(i,:);
     box_corners_world = compute_rbt(V(1), V(2), V(3), box_corners);
     set(box,'XData',box_corners_world(1,:),'YData',box_corners_world(2,:))
     
     P_box_world = compute_rbt(V(1), V(2), V(3),box_params.P_box);
-    for i = 1:num_springs
-        update_spring_plot(spring_plots{i},P_box_world(:,i),box_params.P_world(:,i));
+    for j = 1:num_springs
+        update_spring_plot(spring_plots{j},P_box_world(:,j),box_params.P_world(:,j));
     end
 
+    set(timestamp,'String',string(round(t,2)));
+
+    frametimes(i) = double(toc);
+    pause(t - frametimes(i));
+
     drawnow
-    pause(1/15 - toc);
 end
 
+close all
+figure()
+plot(frametimes - tlist)
+xlabel('Timestep')
+ylabel('Frame Lag (s)')
 
