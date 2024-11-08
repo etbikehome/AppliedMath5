@@ -18,6 +18,10 @@ box_params.P_box = [-1 1 -1 1;
 %via an anonymous function
 my_rate_func = @(t_in,V_in) box_rate_func(t_in,V_in,box_params);
 
+my_rate_func1 = @(V_in) box_rate_func(zeros(length(V_in)),V_in,box_params);
+
+v0 = multi_newton_solver(my_rate_func1,x_guess,true)
+
 x0 = 0;
 y0 = 1;
 theta0 = -pi/6;
@@ -26,12 +30,6 @@ vy0 = 0;
 omega0 = 0;
 
 V0 = [x0;y0;theta0;vx0;vy0;omega0];
-
-my_rate_func1 = @(V_in) box_rate_func(zeros(length(V_in)),V_in,box_params);
-
-V0 = multi_newton_solver(my_rate_func1,V0,true);
-
-
 tspan = [0 60];
 
 %run the integration

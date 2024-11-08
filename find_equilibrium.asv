@@ -1,0 +1,23 @@
+function find_equilibrium()
+
+x_guess = 1;
+
+%define system parameters
+box_params = struct();
+box_params.m = 1;
+box_params.g = 1;
+box_params.I = 4;
+box_params.k_list = [1 1 1 1] * 4;
+box_params.l0_list = [1 1 1 1];
+box_params.P_world = [-2 2 -2 2;
+                    -2 -2 2 2];
+box_params.P_box = [-1 1 -1 1;
+                    -1 -1 1 1];
+
+my_rate_func = @(t_in,V_in) box_rate_func(t_in,V_in,box_params);
+
+
+multi_newton_solver(my_rate_func,x_guess,varargin)
+
+
+end
