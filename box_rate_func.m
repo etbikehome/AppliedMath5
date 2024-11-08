@@ -12,7 +12,7 @@
 %box_params.P_world: 2 x n list of static mounting
 % points for the spring (in the world frame)
 %box_params.P_box: 2 x n list of mounting points
-% for the spring (in the box frame)
+% for the spring (in the box frame)xxxxx
 %
 %OUTPUTS
 %dVdt = [dxdt;dydt;dthetadt;d2xdt2;d2ydt2;d2thetadt2]:

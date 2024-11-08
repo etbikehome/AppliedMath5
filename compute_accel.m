@@ -44,7 +44,8 @@ function [ax,ay,atheta] = compute_accel(x,y,theta,box_params)
     r = P_box_world - [x;y];
     r_pad = [r;zeros(1,size(r,2))];
     F_pad = [F;zeros(1,size(F,2))];
-    T = norm(cross(r_pad,F_pad));
+    T = cross(r_pad,F_pad);
+    T = T(3);
     atheta = T/I;
 end
 

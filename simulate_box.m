@@ -6,8 +6,8 @@ clc
 box_params = struct();
 box_params.m = 1;
 box_params.g = 1;
-box_params.I = 1;
-box_params.k_list = [2 2 2 2];
+box_params.I = 4;
+box_params.k_list = [1 1 1 1] * 4;
 box_params.l0_list = [1 1 1 1];
 box_params.P_world = [-2 2 -2 2;
                     -2 -2 2 2];
