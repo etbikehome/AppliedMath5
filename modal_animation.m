@@ -31,7 +31,7 @@ Veq = multi_newton_solver(my_rate_func,V0,true);
 J_approx = approximate_jacobian(my_rate_func, Veq);
 
 [Umode, omega_n] = eig(J_approx(4:6, 1:3));
-Umode = Umode(:, 2);
+Umode = Umode(:, 3);
 omega_n = sqrt(-omega_n(1));
 V0 = Veq + epsilon*[Umode;0;0;0];
 
