@@ -20,7 +20,7 @@ my_rate_func = @(t_in,V_in) box_rate_func(t_in,V_in,box_params);
 
 x0 = 0;
 y0 = 1;
-theta0 = -pi/6;
+theta0 = 0;
 vx0 = 0;
 vy0 = 0;
 omega0 = 0;
@@ -54,6 +54,16 @@ axis([-5,5,-5,5]);
 timestamp = text(-4, 4, '');
 frametimes = zeros(length(tlist),1);
 
+    t = tlist(1);
+    V = Vlist(1,:);
+    box_corners_world = compute_rbt(V(1), V(2), V(3), box_corners);
+    set(box,'XData',box_corners_world(1,:),'YData',box_corners_world(2,:))
+    
+    P_box_world = compute_rbt(V(1), V(2), V(3),box_params.P_box);
+    for j = 1:num_springs
+        update_spring_plot(spring_plots{j},P_box_world(:,j),box_params.P_world(:,j));
+    end
+    drawnow
 pause(2)
 tic
 

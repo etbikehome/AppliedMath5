@@ -4,7 +4,7 @@ clc
 
 dx0 = 0;
 dy0 = 1;
-dtheta0 = -pi/6;
+dtheta0 = 0.1;
 vx0 = 0;
 vy0 = 0;
 vtheta0 = 0;
@@ -22,17 +22,19 @@ box_params.P_box = [-1 1 -1 1;
                     -1 -1 1 1];
 
 %small number used to scale initial perturbation
-epsilon = 0.000001;
+epsilon = .01;
 tspan = [0 5];
 
 my_rate_func = @(V_in) box_rate_func(tspan(1),V_in,box_params);
 V0 = [dx0;dy0;dtheta0;vx0;vy0;vtheta0];
-J_approx = approximate_jacobian(my_rate_func, V0);
-Veq = multi_newton_solver(my_rate_func,V0,true);
 
+Veq = multi_newton_solver(my_rate_func,V0,true);
+J_approx = approximate_jacobian(my_rate_func, Veq);
+
+mode_index = 3;
 [Umode, omega_n] = eig(J_approx(4:6, 1:3));
-Umode = Umode(:, 1);
-omega_n = sqrt(-omega_n(1));
+Umode = Umode(:, mode_index);
+omega_n = sqrt(-omega_n(mode_index,mode_index));
 V0 = Veq + epsilon*[Umode;0;0;0];
 
 %run the integration of nonlinear system
@@ -45,20 +47,31 @@ x_modal = Veq(1)+epsilon*Umode(1)*cos(omega_n*tlist_nonlinear);
 y_modal = Veq(2)+epsilon*Umode(2)*cos(omega_n*tlist_nonlinear);
 theta_modal = Veq(3)+epsilon*Umode(3)*cos(omega_n*tlist_nonlinear);
 
-figure(1)
-plot(tlist_nonlinear, Vlist_nonlinear(:, 1))
-hold on
-plot(tlist_nonlinear, x_modal)
-legend('nonlinear', 'modal')
+tiles = tiledlayout(3,1);
 
-figure(2)
-plot(tlist_nonlinear, Vlist_nonlinear(:, 2))
+nexttile(tiles);
+line1 = plot(tlist_nonlinear, Vlist_nonlinear(:, 1)-x_modal(1),'DisplayName','Nonlinear');
 hold on
-plot(tlist_nonlinear, y_modal)
-legend('nonlinear', 'modal')
+line2 = plot(tlist_nonlinear, x_modal-x_modal(1),'--','DisplayName','Modal');
+xlabel('Time (s)')
+ylabel('Position')
+title('X Displacement')
 
-figure(3)
-plot(tlist_nonlinear, Vlist_nonlinear(:, 3))
+nexttile(tiles);
+plot(tlist_nonlinear, Vlist_nonlinear(:, 2)-y_modal(1))
 hold on
-plot(tlist_nonlinear, theta_modal)
-legend('nonlinear', 'modal')
+plot(tlist_nonlinear, y_modal-y_modal(1),'--')
+xlabel('Time (s)')
+ylabel('Position')
+title('Y Displacement')
+
+nexttile(tiles);
+plot(tlist_nonlinear, Vlist_nonlinear(:, 3)-theta_modal(1))
+hold on
+plot(tlist_nonlinear, theta_modal-theta_modal(1),'--')
+xlabel('Time (s)')
+ylabel('Angle (rad)')
+title('Rotation Angle')
+
+tile_legend = legend([line1,line2]);
+tile_legend.Layout.Tile = 'South';
