@@ -20,7 +20,7 @@ my_rate_func = @(t_in,V_in) box_rate_func(t_in,V_in,box_params);
 
 x0 = 0;
 y0 = 1;
-theta0 = -pi/6;
+theta0 = 0;
 vx0 = 0;
 vy0 = 0;
 omega0 = 0;
